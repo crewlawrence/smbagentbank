@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  users     User[]
+  ledgerAccounts LedgerAccount[]
+  transactions Transaction[]
+  reconciliationRuns ReconciliationRun[]
+  integrations Integration[]
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String?  @unique
+  emailVerified DateTime?
+  image         String?
+  tenantId      String?
+  tenant        Tenant?  @relation(fields: [tenantId], references: [id])
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime @default(now())
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model LedgerAccount {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  type      String
+  createdAt DateTime @default(now())
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  accountId   String
+  account     LedgerAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  source      String
+  date        DateTime
+  amount      Float
+  description String
+  reference   String
+  rawJson     String
+  createdAt   DateTime @default(now())
+  bankMatches MatchSuggestion[] @relation("bankMatches")
+  accountingMatches MatchSuggestion[] @relation("accountingMatches")
+}
+
+model ReconciliationRun {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  summary   String
+  matches   MatchSuggestion[]
+}
+
+model MatchSuggestion {
+  id                     String   @id @default(cuid())
+  runId                  String
+  run                    ReconciliationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  bankTransactionId      String
+  bankTransaction        Transaction @relation("bankMatches", fields: [bankTransactionId], references: [id], onDelete: Cascade)
+  accountingTransactionId String
+  accountingTransaction  Transaction @relation("accountingMatches", fields: [accountingTransactionId], references: [id], onDelete: Cascade)
+  type                   String
+  confidence             Float
+  explanation            String
+  status                 String   @default("pending")
+  createdAt              DateTime @default(now())
+}
+
+model Integration {
+  id           String   @id @default(cuid())
+  tenantId     String
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  provider     String
+  accessToken  String?
+  refreshToken String?
+  realmId      String?
+  createdAt    DateTime @default(now())
+}
