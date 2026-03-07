@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  font-family: var(--font-body, "Work Sans"), ui-sans-serif, system-ui;
+  background: radial-gradient(circle at top, #ffffff 0%, #faf7f2 50%, #f3eee5 100%);
+  color: #101820;
+}
+
+.font-display {
+  font-family: var(--font-display, "Space Grotesk"), ui-sans-serif, system-ui;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5d8;
+  border-radius: 999px;
+}
+
+.node-card {
+  @apply rounded-2xl border border-ink-700/10 bg-white/90 shadow-card backdrop-blur;
+}
+
+.primary-button {
+  @apply rounded-full bg-ink-900 px-5 py-2 text-sm font-semibold text-white shadow-lg transition hover:translate-y-[-1px] hover:bg-ink-700;
+}
+
+.secondary-button {
+  @apply rounded-full border border-ink-900/20 px-5 py-2 text-sm font-semibold text-ink-900 transition hover:border-ink-900 hover:text-ink-700;
+}
+
+.badge {
+  @apply inline-flex items-center gap-2 rounded-full bg-sand-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-ink-700;
+}
