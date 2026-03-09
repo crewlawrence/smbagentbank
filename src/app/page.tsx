@@ -8,12 +8,10 @@ export default function HomePage() {
           <div className="max-w-2xl">
             <span className="badge">Bank Reconciliation Agent</span>
             <h1 className="mt-6 font-display text-4xl font-semibold text-ink-900 md:text-6xl">
-              LedgerSync AI helps SMBs reconcile in minutes, not days.
+              Finance agent AI helps SMBs reconcile in minutes, not days.
             </h1>
             <p className="mt-6 text-lg text-ink-500">
-              Upload your bank CSV and accounting records, let the agent normalize data,
-              match transactions, surface exceptions, and guide your team through human
-              review. Export a clean reconciliation package when you're done.
+            Upload your bank CSV and accounting records and let the AI agent handle the heavy lifting. It normalizes data, matches transactions, explains reconciliation exceptions, and suggests likely fixes so your team can quickly review and export a clean reconciliation package.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link className="primary-button" href="/login">
